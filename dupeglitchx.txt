@@ -1,0 +1,136 @@
+local LocalPlayer = game:GetService("Players").LocalPlayer
+
+-- Fake Loading Screen
+local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+screenGui.Name = "FakeLoadingScreen"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.DisplayOrder = 9999
+
+local background = Instance.new("Frame", screenGui)
+background.Size = UDim2.new(1, 0, 1, 0)
+background.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+
+local frame = Instance.new("Frame", background)
+frame.Size = UDim2.new(0.35, 0, 0.18, 0)
+frame.Position = UDim2.new(0.325, 0, 0.43, 0)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+
+local barBackground = Instance.new("Frame", frame)
+barBackground.Size = UDim2.new(1, -20, 0.25, 0)
+barBackground.Position = UDim2.new(0, 10, 0.6, 0)
+barBackground.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+
+local progressBar = Instance.new("Frame", barBackground)
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+
+local loadingLabel = Instance.new("TextLabel", frame)
+loadingLabel.Size = UDim2.new(1, 0, 0.4, 0)
+loadingLabel.Position = UDim2.new(0, 0, 0.05, 0)
+loadingLabel.BackgroundTransparency = 1
+loadingLabel.TextColor3 = Color3.new(1, 1, 1)
+loadingLabel.TextScaled = true
+loadingLabel.Font = Enum.Font.SourceSansBold
+loadingLabel.Text = "Loading... 0%"
+
+local infoLabel = Instance.new("TextLabel", frame)
+infoLabel.Size = UDim2.new(1, -20, 0.25, 0)
+infoLabel.Position = UDim2.new(0, 10, 0.9, 0)
+infoLabel.BackgroundTransparency = 1
+infoLabel.TextColor3 = Color3.fromRGB(170, 170, 170)
+infoLabel.TextScaled = true
+infoLabel.Font = Enum.Font.SourceSans
+infoLabel.Text = "Duplication, Auto-Hatch and SECRET Egg Hatcher Gui by cu7i - discord.gg/A3sRJhB4"
+infoLabel.TextWrapped = true
+
+local tradeNotice = Instance.new("TextLabel", frame)
+tradeNotice.Size = UDim2.new(1, -20, 0.15, 0)
+tradeNotice.Position = UDim2.new(0, 10, 1.15, 0)
+tradeNotice.BackgroundTransparency = 1
+tradeNotice.TextColor3 = Color3.fromRGB(255, 100, 100)
+tradeNotice.TextScaled = true
+tradeNotice.Font = Enum.Font.SourceSansItalic
+tradeNotice.Text = "Script sometimes fails in private servers so use it in a public server for it to work 100% of the time"
+tradeNotice.TextWrapped = true
+
+-- Animate loading and then remove
+task.spawn(function()
+	local percent = 0
+	local steps = 1000
+	local delayPerStep = 85 / steps
+	for i = 1, steps do
+		percent += (99.99 / steps)
+		progressBar.Size = UDim2.new(percent / 100, 0, 1, 0)
+		loadingLabel.Text = ("Loading... %.2f%%"):format(percent)
+		task.wait(delayPerStep)
+	end
+
+	task.wait(0.5)
+	screenGui:Destroy()
+
+	-- === MAIN GUI ===
+	local mainGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+	mainGui.Name = "MainHatchDuplicationGUI"
+	mainGui.ResetOnSpawn = false
+	mainGui.DisplayOrder = 10000
+
+	local mainFrame = Instance.new("Frame", mainGui)
+	mainFrame.Size = UDim2.new(0.28, 0, 0.35, 0)
+	mainFrame.Position = UDim2.new(0.36, 0, 0.32, 0)
+	mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	mainFrame.BorderSizePixel = 0
+	mainFrame.Active = true
+	mainFrame.Draggable = true
+
+	local title = Instance.new("TextLabel", mainFrame)
+	title.Size = UDim2.new(1, 0, 0.2, 0)
+	title.Position = UDim2.new(0, 0, 0, 0)
+	title.BackgroundTransparency = 1
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.Font = Enum.Font.SourceSansBold
+	title.TextScaled = true
+	title.TextWrapped = true
+	title.Text = "Duplication, Auto-Hatch and Secret Egg Hatcher GUI by cu7i"
+
+	-- Notification label
+	local notification = Instance.new("TextLabel", mainGui)
+	notification.Size = UDim2.new(0.4, 0, 0.05, 0)
+	notification.Position = UDim2.new(0.3, 0, 0.75, 0)
+	notification.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	notification.TextColor3 = Color3.new(1, 1, 1)
+	notification.Font = Enum.Font.SourceSansBold
+	notification.TextScaled = true
+	notification.BackgroundTransparency = 0.2
+	notification.Visible = false
+
+	local function showMessage(text)
+		notification.Text = text .. " activated"
+		notification.Visible = true
+		task.delay(2, function()
+			notification.Visible = false
+		end)
+	end
+
+	-- Button Creator Function
+	local function createButton(text, position)
+		local button = Instance.new("TextButton", mainFrame)
+		button.Size = UDim2.new(0.8, 0, 0.18, 0)
+		button.Position = UDim2.new(0.1, 0, position, 0)
+		button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		button.TextColor3 = Color3.fromRGB(255, 255, 255)
+		button.Font = Enum.Font.SourceSansBold
+		button.TextScaled = true
+		button.Text = text
+		button.Name = text:gsub(" ", "") .. "Button"
+
+		button.MouseButton1Click:Connect(function()
+			showMessage(button.Text)
+			-- Place feature logic here
+		end)
+	end
+
+	createButton("Secret Hatcher", 0.25)
+	createButton("Auto-Hatch", 0.45)
+	createButton("Duplication", 0.65)
+end)
