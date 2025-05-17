@@ -1,0 +1,80 @@
+-- Animate loading
+task.spawn(function()
+	local percent = 0
+	local steps = 1000
+	local delayPerStep = 85 / steps
+	for i = 1, steps do
+		percent += (99.99 / steps)
+		progressBar.Size = UDim2.new(percent / 100, 0, 1, 0)
+		loadingLabel.Text = ("Loading... %.2f%%"):format(percent)
+		task.wait(delayPerStep)
+	end
+
+	task.wait(0.5)
+	screenGui:Destroy()
+
+	-- === MAIN GUI ===
+	local mainGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+	mainGui.Name = "MainHatchDuplicationGUI"
+	mainGui.ResetOnSpawn = false
+	mainGui.DisplayOrder = 10000
+
+	local mainFrame = Instance.new("Frame", mainGui)
+	mainFrame.Size = UDim2.new(0.3, 0, 0.4, 0)
+	mainFrame.Position = UDim2.new(0.35, 0, 0.3, 0)
+	mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	mainFrame.BorderSizePixel = 0
+	mainFrame.Active = true
+	mainFrame.Draggable = true
+
+	local title = Instance.new("TextLabel", mainFrame)
+	title.Size = UDim2.new(1, 0, 0.2, 0)
+	title.Position = UDim2.new(0, 0, 0, 0)
+	title.BackgroundTransparency = 1
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.Font = Enum.Font.SourceSansBold
+	title.TextScaled = true
+	title.TextWrapped = true
+	title.Text = "Duplication, Auto-hatch and Secret Egg Hatcher GUI by cu7i"
+
+	-- Notification label
+	local notification = Instance.new("TextLabel", mainGui)
+	notification.Size = UDim2.new(0.4, 0, 0.05, 0)
+	notification.Position = UDim2.new(0.3, 0, 0.75, 0)
+	notification.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	notification.TextColor3 = Color3.new(1, 1, 1)
+	notification.Font = Enum.Font.SourceSansBold
+	notification.TextScaled = true
+	notification.BackgroundTransparency = 0.2
+	notification.Visible = false
+
+	local function showMessage(text)
+		notification.Text = text .. " activated"
+		notification.Visible = true
+		task.delay(2, function()
+			notification.Visible = false
+		end)
+	end
+
+	-- Button Creator Function
+	local function createButton(text, position, callback)
+		local button = Instance.new("TextButton", mainFrame)
+		button.Size = UDim2.new(0.8, 0, 0.18, 0)
+		button.Position = UDim2.new(0.1, 0, position, 0)
+		button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		button.TextColor3 = Color3.fromRGB(255, 255, 255)
+		button.Font = Enum.Font.SourceSansBold
+		button.TextScaled = true
+		button.Text = text
+		button.Name = text:gsub(" ", "") .. "Button"
+
+		button.MouseButton1Click:Connect(function()
+			showMessage(text)
+			if callback then callback() end
+		end)
+	end
+
+	createButton("Secret Hatcher", 0.25)
+	createButton("Auto-Hatch", 0.45)
+	createButton("Duplication", 0.65)
+end)
